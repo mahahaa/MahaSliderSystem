@@ -2,6 +2,10 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// Regulates the snapping effect of the slider
+/// by Maha
+/// </summary>
 [RequireComponent(typeof(SimpleScroll))]
 public class ScrollSnapper : MonoBehaviour
 {

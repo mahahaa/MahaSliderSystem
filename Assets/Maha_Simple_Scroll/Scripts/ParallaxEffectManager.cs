@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(SimpleScroll))]
 public sealed class ParallaxEffectManager : MonoBehaviour
 {
     [Serializable]
@@ -13,6 +12,7 @@ public sealed class ParallaxEffectManager : MonoBehaviour
         [HideInInspector] public Vector2 initialPosition;
     }
 
+    [Tooltip("you can only refrence children of the element itself")]
     [SerializeField] private ParallaxLayer[] layers = new ParallaxLayer[6];
     private ScrollRect scrollRect;
 

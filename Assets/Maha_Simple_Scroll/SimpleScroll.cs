@@ -19,14 +19,20 @@ public class SimpleScroll : MonoBehaviour, IDragHandler, IEndDragHandler
     [SerializeField] private float _snapSpeed = 10f;
     [SerializeField] private bool _centerElements = false;
     [SerializeField] private float _itemSpacing = 20f;
+
+    [Header("Options")]
     [SerializeField] private bool _useNavigationButtons = false;
     [SerializeField] private bool _useParallaxEffect = false;
+    [SerializeField] private bool _useToggleNavigation = false;
 
     private bool _isSnapping = false;
     private int _currentIndex = 0;
 
     private Subject<int> _onSlideChanged = new();
     public Observable<int> OnSlideChangedObservable => _onSlideChanged.AsObservable();
+
+    public delegate void SlideChanged(int index);
+    public event SlideChanged OnSlideChangedEvent;
 
     private void Awake()
     {
@@ -96,6 +102,16 @@ public class SimpleScroll : MonoBehaviour, IDragHandler, IEndDragHandler
             {
                 _isSnapping = false;
             }
+        }
+    }
+
+    public void GoToSlide(int index)
+    {
+        if (index >= 0 && index < _snapper.GetTotalSlides())
+        {
+            _currentIndex = index;
+            _isSnapping = true;
+            _onSlideChanged.OnNext(_currentIndex);
         }
     }
 

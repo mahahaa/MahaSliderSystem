@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(SimpleScroll))]
 public sealed class ParallaxEffectManager : MonoBehaviour
 {
     [Serializable]

@@ -1,7 +1,7 @@
 using System;
-using System.Runtime.InteropServices;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
 
 [CustomEditor(typeof(SimpleScroll))]
 
@@ -13,7 +13,8 @@ public class SimpleScrollEditor : Editor
         SimpleScroll simpleScroll = (SimpleScroll)target;
 
         HandleTargetManager(simpleScroll, "_useNavigationButtons", "Remove SlideButtonManager", typeof(SliderButtonManager));
-        HandleTargetManager(simpleScroll, "_useParallaxEffect", "Remove ParallaxLayer", typeof(ParallaxEffectManager));
+        HandleParallaxEffect(simpleScroll);
+        HandleTargetManager(simpleScroll, "_useToggleNavigation", "Remove ToggleGroupManager", typeof(ToggleGroupManager));
     }
 
     /// <summary>
@@ -52,6 +53,53 @@ public class SimpleScrollEditor : Editor
                         Debug.Log($"{managerType.Name} removed from the GameObject.");
                     }
                 };
+            }
+        }
+    }
+
+    /// <summary>
+    /// Ensures ParallaxEffectManager is applied to each child of the content container, not the ScrollView itself.
+    /// </summary>
+    private void HandleParallaxEffect(SimpleScroll simpleScroll)
+    {
+        SerializedProperty property = serializedObject.FindProperty("_useParallaxEffect");
+        if (property == null)
+        {
+            Debug.LogError("Property '_useParallaxEffect' not found in SimpleScroll.");
+            return;
+        }
+
+        bool isEnabled = property.boolValue;
+        ScrollRect scrollRect = simpleScroll.GetComponent<ScrollRect>();
+
+        if (scrollRect == null || scrollRect.content == null)
+        {
+            Debug.LogError("ScrollRect or its content container is missing.");
+            return;
+        }
+
+        Transform contentTransform = scrollRect.content;
+
+        foreach (Transform child in contentTransform)
+        {
+            if (isEnabled)
+            {
+                if (!child.gameObject.GetComponent<ParallaxEffectManager>())
+                {
+                    Undo.RegisterCompleteObjectUndo(child.gameObject, "Add ParallaxEffectManager");
+                    child.gameObject.AddComponent<ParallaxEffectManager>();
+                    Debug.Log($"ParallaxEffectManager added to {child.name}.");
+                }
+            }
+            else
+            {
+                ParallaxEffectManager parallaxEffect = child.gameObject.GetComponent<ParallaxEffectManager>();
+                if (parallaxEffect != null)
+                {
+                    Undo.RegisterCompleteObjectUndo(child.gameObject, "Remove ParallaxEffectManager");
+                    DestroyImmediate(parallaxEffect);
+                    Debug.Log($"ParallaxEffectManager removed from {child.name}.");
+                }
             }
         }
     }

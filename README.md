@@ -60,5 +60,7 @@ If you want previous/next buttons:
   - Subscribes to SimpleScroll.OnSlideChangedObservable
   - Enables/disables Prev/Next buttons based on the current slide.
   - Requires references to SimpleScroll and two Buttons in the Inspector.
-
++ ParallaxEffectManager
+  - adds a parallax scrolling effect to child elements of a UI container.
+  - This effect creates a sense of depth by moving background elements at different speeds relative to the scroll position.
 
